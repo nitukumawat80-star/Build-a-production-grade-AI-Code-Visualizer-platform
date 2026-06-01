@@ -1,0 +1,59 @@
+#! backend-deployment.yaml
+# Generated code, do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: backend
+    namespace: build-a-production-grade-ai-code
+    labels:
+        com.docker.compose.project: build-a-production-grade-ai-code
+        com.docker.compose.service: backend
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            com.docker.compose.project: build-a-production-grade-ai-code
+            com.docker.compose.service: backend
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                com.docker.compose.project: build-a-production-grade-ai-code
+                com.docker.compose.service: backend
+                com.docker.compose.network.default: "true"
+        spec:
+            containers:
+                - name: backend
+                  image: build-a-production-grade-ai-code-backend
+                  imagePullPolicy: IfNotPresent
+                  env:
+                    - name: ACCESS_TOKEN_EXPIRE_MINUTES
+                      value: "60"
+                    - name: APP_ENV
+                      value: "development"
+                    - name: APP_HOST
+                      value: "0.0.0.0"
+                    - name: APP_PORT
+                      value: "8000"
+                    - name: CORS_ORIGINS
+                      value: "http://localhost:3000"
+                    - name: NEXT_PUBLIC_API_BASE_URL
+                      value: "http://localhost:8000/api/v1"
+                    - name: POSTGRES_DB
+                      value: "code_visualizer"
+                    - name: POSTGRES_HOST
+                      value: "postgres"
+                    - name: POSTGRES_PASSWORD
+                      value: "postgres"
+                    - name: POSTGRES_PORT
+                      value: "5432"
+                    - name: POSTGRES_USER
+                      value: "postgres"
+                    - name: REDIS_URL
+                      value: "redis://redis:6379/0"
+                    - name: SECRET_KEY
+                      value: "change_me"
+                  ports:
+                    - name: backend-8000
+                      containerPort: 8000

@@ -1,0 +1,35 @@
+#! frontend-deployment.yaml
+# Generated code, do not edit
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: frontend
+    namespace: build-a-production-grade-ai-code
+    labels:
+        com.docker.compose.project: build-a-production-grade-ai-code
+        com.docker.compose.service: frontend
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            com.docker.compose.project: build-a-production-grade-ai-code
+            com.docker.compose.service: frontend
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                com.docker.compose.project: build-a-production-grade-ai-code
+                com.docker.compose.service: frontend
+                com.docker.compose.network.default: "true"
+        spec:
+            containers:
+                - name: frontend
+                  image: build-a-production-grade-ai-code-frontend
+                  imagePullPolicy: IfNotPresent
+                  env:
+                    - name: NEXT_PUBLIC_API_BASE_URL
+                      value: "http://localhost:8000/api/v1"
+                  ports:
+                    - name: frontend-3000
+                      containerPort: 3000

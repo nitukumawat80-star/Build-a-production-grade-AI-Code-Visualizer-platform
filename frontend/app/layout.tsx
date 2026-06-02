@@ -3,11 +3,14 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "AI Code Visualizer",
-  description: "Production-grade AST visualizer SaaS"
+  description: "Production-grade AST visualizer SaaS",
+  verification: {
+    google: "m5fSfRzuKOEU77Zng1z-PfEsuo36WpeUBTeKK_dGlws",
+  },
 };
 
 export default function RootLayout({
-  children
+  children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {

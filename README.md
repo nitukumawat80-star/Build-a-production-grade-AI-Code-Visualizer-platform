@@ -9,6 +9,7 @@ Production-grade, startup-ready AI code visualization platform for Python, Java,
 - DSA pattern detector: arrays, strings, linked lists, trees, graphs, DP, greedy, sliding window, two pointers.
 - Animated visualization timeline controls: play, pause, next, previous, scrubber.
 - AI narration preparation in English and Hindi.
+- Optional Google Gemini enhancement layer for richer narration and insights.
 - Export pipeline contracts for MP4, GIF, and PDF.
 - Premium dashboard with analytics and user history.
 - Clean architecture, repository pattern, Docker, CI/CD-ready, PostgreSQL + Redis.
@@ -30,6 +31,20 @@ Production-grade, startup-ready AI code visualization platform for Python, Java,
 3. Open:
    - Frontend: http://localhost:3000
    - Backend docs: http://localhost:8000/docs
+
+## Fetch Troubleshooting
+- Frontend uses `NEXT_PUBLIC_API_BASE_URL=/api/backend` by default.
+- Next.js proxies `/api/backend/*` to `BACKEND_API_BASE_URL`.
+- For Docker, keep `BACKEND_API_BASE_URL=http://backend:8000/api/v1`.
+- For Cloud Run, set `BACKEND_API_BASE_URL=https://YOUR_BACKEND_URL/api/v1`.
+- If analysis says backend connection failed, check that the backend service is running and this URL is reachable from the frontend runtime.
+
+## Gemini Setup (Optional)
+1. Create Gemini API key from [Google AI Studio](https://ai.google.dev/).
+2. Add in `.env`:
+   - `GEMINI_API_KEY=your_key`
+   - `GEMINI_MODEL=gemini-2.5-flash`
+3. In UI, choose `AI Provider = Google Gemini`.
 
 ## Monorepo Layout
 - `backend/`: FastAPI services, domain logic, AST analysis.

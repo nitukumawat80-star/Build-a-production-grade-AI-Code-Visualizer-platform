@@ -10,6 +10,7 @@ class TimelineStep:
     action: str
     locals: dict[str, Any]
     globals: dict[str, Any]
+    stack_depth: int = 0
     output: str | None = None
 
 

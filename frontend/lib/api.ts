@@ -6,17 +6,38 @@ import {
   DashboardTrend
 } from "@/lib/types";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api/v1";
+const API_BASE =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "/api/backend";
 
 export async function runAnalysis(payload: AnalysisRequest): Promise<AnalysisResponse> {
-  const response = await fetch(`${API_BASE}/analysis/run`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE}/analysis/run`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+  } catch (error) {
+    throw new Error(
+      error instanceof TypeError
+        ? "Backend se connection nahi ho pa raha. Backend service running hai aur API URL sahi hai ye check karein."
+        : "Analysis request failed"
+    );
+  }
 
   if (!response.ok) {
-    throw new Error(`Analysis failed (${response.status})`);
+    let message = `Analysis failed (${response.status})`;
+    try {
+      const body = await response.json();
+      if (typeof body?.detail === "string" && body.detail.trim()) {
+        message = body.detail;
+      }
+    } catch {
+      // Fall back to the generic status message.
+    }
+    throw new Error(message);
   }
 
   return response.json();

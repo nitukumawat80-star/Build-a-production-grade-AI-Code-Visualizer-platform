@@ -9,6 +9,7 @@ type Step = {
   title: string;
   line: number;
   action: string;
+  stack_depth?: number;
   output?: string | null;
   locals?: Record<string, unknown>;
   globals?: Record<string, unknown>;
@@ -49,6 +50,17 @@ export function TimelinePlayer({ steps, onStepChange }: Props) {
   }, [playing, speedMs, steps.length]);
 
   const step = useMemo(() => steps[current], [steps, current]);
+  const previousStep = current > 0 ? steps[current - 1] : null;
+
+  const diffEntries = (
+    currentScope?: Record<string, unknown>,
+    previousScope?: Record<string, unknown> | null
+  ) => {
+    const prev = previousScope || {};
+    return Object.entries(currentScope || {})
+      .filter(([key, value]) => prev[key] !== value)
+      .slice(0, 10);
+  };
 
   if (steps.length === 0) {
     return <div className="panel rounded-2xl p-6 text-sm text-slate-300">No timeline yet.</div>;
@@ -146,6 +158,11 @@ export function TimelinePlayer({ steps, onStepChange }: Props) {
           <p className="text-sm text-slate-300">{step.title}</p>
           <p className="mt-1 text-xl font-semibold text-white">{step.action}</p>
           <p className="mt-1 text-sm text-slate-400">Line {step.line}</p>
+          {typeof step.stack_depth === "number" ? (
+            <p className="mt-1 text-xs uppercase tracking-[0.2em] text-cyan-300">
+              Stack depth {step.stack_depth}
+            </p>
+          ) : null}
           {step.output ? <p className="mt-2 text-sm text-amber-300">Output: {step.output}</p> : null}
         </div>
 
@@ -169,6 +186,24 @@ export function TimelinePlayer({ steps, onStepChange }: Props) {
                 <p className="text-xs text-slate-500">No global changes at this step.</p>
               )}
             </div>
+          </div>
+        </div>
+
+        <div>
+          <p className="mb-2 text-xs uppercase tracking-wide text-slate-400">Changed At This Step</p>
+          <div className="flex flex-wrap gap-2">
+            {diffEntries(step.locals, previousStep?.locals).length > 0 ? (
+              diffEntries(step.locals, previousStep?.locals).map(([key, value]) => (
+                <span
+                  key={key}
+                  className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-xs text-emerald-200"
+                >
+                  {key} = {String(value)}
+                </span>
+              ))
+            ) : (
+              <span className="text-xs text-slate-500">No local changes.</span>
+            )}
           </div>
         </div>
       </motion.div>

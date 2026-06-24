@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.application.services.analysis_service import AnalysisService
+from app.application.services.gemini_service import GeminiEnhancementService
 from app.core.config import get_settings
 from app.db.session import get_db_session
 from app.infrastructure.cache.redis_cache import RedisCache
@@ -17,7 +18,12 @@ async def get_analysis_service(session: AsyncSession = Depends(get_db_session)) 
     settings = get_settings()
     repository = PostgresAnalysisRepository(session)
     cache = RedisCache(settings.redis_url)
-    return AnalysisService(repository=repository, cache=cache)
+    gemini = GeminiEnhancementService(
+        api_key=settings.gemini_api_key,
+        model=settings.gemini_model,
+        timeout_seconds=settings.gemini_timeout_seconds,
+    )
+    return AnalysisService(repository=repository, cache=cache, gemini_service=gemini)
 
 
 @router.post("/run", response_model=AnalysisResponse)
@@ -26,7 +32,12 @@ async def run_analysis(
     service: AnalysisService = Depends(get_analysis_service),
 ) -> dict:
     try:
-        return await service.run(user_id=payload.user_id, language=payload.language, code=payload.code)
+        return await service.run(
+            user_id=payload.user_id,
+            language=payload.language,
+            code=payload.code,
+            ai_provider=payload.ai_provider,
+        )
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 

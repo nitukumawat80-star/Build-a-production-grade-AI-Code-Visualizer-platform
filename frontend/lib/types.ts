@@ -4,6 +4,7 @@ export type AnalysisRequest = {
   code: string;
   narration_language: "en" | "hi" | "both";
   optimization_level: "standard" | "aggressive";
+  ai_provider: "local" | "gemini";
 };
 
 export type AnalysisResponse = {
@@ -16,6 +17,7 @@ export type AnalysisResponse = {
     title: string;
     line: number;
     action: string;
+    stack_depth?: number;
     locals: Record<string, unknown>;
     globals: Record<string, unknown>;
     output?: string | null;
@@ -49,6 +51,13 @@ export type AnalysisResponse = {
   narration: {
     en: string;
     hi: string;
+  };
+  ai: {
+    requested_provider: string;
+    used_provider: string;
+    model: string;
+    enhanced: boolean;
+    message: string;
   };
 };
 

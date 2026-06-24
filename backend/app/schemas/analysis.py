@@ -11,6 +11,7 @@ class AnalysisRunRequest(BaseModel):
     code: str
     narration_language: Literal["en", "hi", "both"] = "both"
     optimization_level: Literal["standard", "aggressive"] = "standard"
+    ai_provider: Literal["local", "gemini"] = "local"
 
 
 class AnalysisResponse(BaseModel):
@@ -28,6 +29,7 @@ class AnalysisResponse(BaseModel):
     code_smells: list[dict[str, Any]]
     bug_risks: list[dict[str, Any]]
     narration: dict[str, str]
+    ai: dict[str, Any]
 
 
 class AnalysisHistoryItem(BaseModel):

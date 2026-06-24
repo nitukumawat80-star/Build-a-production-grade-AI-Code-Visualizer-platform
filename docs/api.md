@@ -7,7 +7,7 @@ Base URL: `/api/v1`
 
 ## Analysis
 - `POST /analysis/run`
-  - Request: language, code, narration_language, optimization_level
+  - Request: language, code, narration_language, optimization_level, ai_provider (`local|gemini`)
   - Response: full visualization payload + complexity + insights
   - Example:
     ```json
@@ -16,7 +16,8 @@ Base URL: `/api/v1`
       "language": "python",
       "code": "x = 1\nprint(x + 2)",
       "narration_language": "both",
-      "optimization_level": "standard"
+      "optimization_level": "standard",
+      "ai_provider": "gemini"
     }
     ```
 

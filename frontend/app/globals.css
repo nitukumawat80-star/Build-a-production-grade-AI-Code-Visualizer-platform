@@ -40,6 +40,15 @@ body {
   color: #8ef7ea;
 }
 
+.monaco-editor .dry-run-active-line {
+  background: rgba(0, 217, 192, 0.12) !important;
+}
+
+.monaco-editor .dry-run-active-line-gutter {
+  border-left: 3px solid rgba(0, 217, 192, 0.9) !important;
+  margin-left: -3px;
+}
+
 .dark .panel {
   background: rgba(10, 14, 24, 0.82);
 }
